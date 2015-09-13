@@ -15,11 +15,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.neo4j.config.EnableNeo4jRepositories;
 import org.springframework.data.neo4j.config.Neo4jConfiguration;
 import org.springframework.data.neo4j.core.GraphDatabase;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
 @SpringBootApplication
 public class Application implements CommandLineRunner {
 
 	@Configuration
+	@EnableTransactionManagement
 	@EnableNeo4jRepositories(basePackages = "lynn")
 	static class ApplicationConfig extends Neo4jConfiguration {
 
@@ -104,4 +107,16 @@ public class Application implements CommandLineRunner {
 
 		SpringApplication.run(Application.class, args);
 	}
+	
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		  registry.addResourceHandler("/assets/**")
+		    .addResourceLocations("classpath:/assets/");
+		  registry.addResourceHandler("/css/**")
+		    .addResourceLocations("/css/");
+		  registry.addResourceHandler("/img/**")
+		    .addResourceLocations("/img/");
+		  registry.addResourceHandler("/js/**")
+		    .addResourceLocations("/js/");
+		}
+
 }

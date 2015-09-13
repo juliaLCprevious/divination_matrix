@@ -9,6 +9,9 @@ import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @NodeEntity
 public class Cell {
 	
@@ -25,7 +28,7 @@ public class Cell {
 	/**
 	 * Node relationships
 	 */
-	
+	@JsonIgnore // We don't want to serialize all the cytoplasms, it'd be stack overflow hell I tells ya!
 	@RelatedTo(type="CYTOPLASM", direction=Direction.BOTH)
 	private @Fetch Set<Cell> cytoplasm;
 	
@@ -67,10 +70,12 @@ public class Cell {
 		this.about = about;
 	}
 	
+	@JsonIgnore
 	public Set<Cell> getCytoplasm() {
 		return cytoplasm;
 	}
 	
+	@JsonProperty
 	public void setCytoplasm(Set<Cell> cytoplasm) {
 		this.cytoplasm = cytoplasm;
 	}

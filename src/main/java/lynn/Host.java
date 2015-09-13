@@ -9,6 +9,9 @@ import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @NodeEntity
 public class Host {
 	
@@ -24,6 +27,7 @@ public class Host {
 	 * Node relationships
 	 */
 	
+	@JsonIgnore // We don't want to serialize all the cells, it'd be recursive hell I tells ya!
 	@RelatedTo(type="CREATED", direction = Direction.OUTGOING)
 	private @Fetch Set<Cell> createdCells;
 	
@@ -54,10 +58,12 @@ public class Host {
 		this.id = id;
 	}
 	
+	@JsonIgnore
 	public Set<Cell> getCreatedCells() {
 		return createdCells;
 	}
-
+	
+	@JsonProperty
 	public void setCreatedCells(Set<Cell> createdCells) {
 		this.createdCells = createdCells;
 	}
