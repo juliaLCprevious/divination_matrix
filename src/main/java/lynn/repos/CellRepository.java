@@ -18,7 +18,7 @@ public interface CellRepository extends CrudRepository<Cell, Long> {
 	@Query("MATCH (n:Cell) return count(n)")
 	int getTotalCellCount();
 	
-	@Query("MATCH (n:CELL)-[:KNOWS]-(m:Crew) "
+	@Query("MATCH (n:Cell)-[:CYTOPLASM]-(m:Cell) "
 			+ "WITH DISTINCT n, count(m) AS cytoCount "
 			+ "WHERE cytoCount < {0} AND NOT n.name = \"{1}\""
 			+ "WITH n, cytoCount, rand() AS number "

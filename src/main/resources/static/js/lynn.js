@@ -6,7 +6,7 @@ var stompClient = Stomp.over(socket);
 stompClient.connect({}, function(frame) {
     console.log('Connected: ' + frame);
     stompClient.subscribe('/topic/cellCulture', renderCellCulture);
-    stompClient.subscribe('/topic/newCell', renderCellCulture);
+    stompClient.subscribe('/topic/newCell', renderNewCell);
     stompClient.send("/app/welcome", {}, JSON.stringify({ 'id': 0 }));
 });
 

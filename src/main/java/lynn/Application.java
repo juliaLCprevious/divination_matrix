@@ -72,7 +72,6 @@ public class Application implements CommandLineRunner {
 			
 			emily = cellRepository.findByName(emily.getName());
 			emily.addToCytoplasm(julia);
-			emily.addToCytoplasm(noah);
 			cellRepository.save(emily);
 
 			julia = cellRepository.findByName(julia.getName());
