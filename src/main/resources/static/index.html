@@ -1,21 +1,26 @@
 <!DOCTYPE HTML>
 <html>
-  <head>
-  	<title>lynn</title>
-  	<script src="//cdn.jsdelivr.net/sockjs/1.0.0/sockjs.min.js"></script>
-  	<script src="https://raw.githubusercontent.com/jmesnil/stomp-websocket/master/lib/stomp.min.js"></script>
-  	<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
-  </head>
-  <body>
-    <h1>Lynn</h1>
-    <p>~organic social ecosystem~</p>
-    <br>
-    <div id="cells">
-      <h3>// cells</h3>
-    </div>
-  </body>
-  <noscript>
-  	<h2 style="color: #ff0000">Sorry friend, you need JS for this!</h2>
-  </noscript>
-  <script src="/js/lynn.js"></script>
+<head>
+<title>lynn</title>
+<script src="//cdn.jsdelivr.net/sockjs/1.0.0/sockjs.min.js"></script>
+<script src="https://raw.githubusercontent.com/jmesnil/stomp-websocket/master/lib/stomp.min.js"></script>
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+</head>
+<body>
+	<h1>Lynn</h1>
+	<p>~organic social ecosystem~</p>
+	<br>
+	<div>
+		<label>name:</label><input type="text" id="name" /> <label>about:</label><input
+			type="text" id="about" />
+		<button id="create-cell">create new cell</button>
+	</div>
+	<div id="cells">
+		<h3>// cells</h3>
+	</div>
+</body>
+<noscript>
+	<h2 style="color: #ff0000">Sorry friend, you need JS for this!</h2>
+</noscript>
+<script src="/js/lynn.js"></script>
 </html>

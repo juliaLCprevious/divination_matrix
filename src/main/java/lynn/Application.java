@@ -18,6 +18,11 @@ import org.springframework.data.neo4j.core.GraphDatabase;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
+import lynn.models.Cell;
+import lynn.models.Host;
+import lynn.repos.CellRepository;
+import lynn.repos.HostRepository;
+
 @SpringBootApplication
 public class Application implements CommandLineRunner {
 

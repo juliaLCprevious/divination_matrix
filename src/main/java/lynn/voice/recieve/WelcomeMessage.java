@@ -1,4 +1,4 @@
-package lynn;
+package lynn.voice.recieve;
 
 public class WelcomeMessage {
 	

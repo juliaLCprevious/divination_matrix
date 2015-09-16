@@ -1,6 +1,9 @@
-package lynn;
+package lynn.voice.send;
 
 import java.util.Set;
+
+import lynn.models.Cell;
+import lynn.models.Host;
 
 public class CellCulture {
 	

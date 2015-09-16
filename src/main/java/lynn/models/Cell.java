@@ -1,4 +1,4 @@
-package lynn;
+package lynn.models;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -40,7 +40,7 @@ public class Cell {
 	}
 	
 	@RelatedTo(type="CREATED", direction=Direction.INCOMING)
-	private @Fetch Host host;
+	private Host host;
 	
 	/**
 	 * Boring ole' getters n' setters

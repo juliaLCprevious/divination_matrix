@@ -1,4 +1,4 @@
-package lynn;
+package lynn.models;
 
 import java.util.HashSet;
 import java.util.Set;
