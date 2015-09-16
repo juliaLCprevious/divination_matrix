@@ -1,6 +1,7 @@
 package lynn.services;
 
 import java.util.List;
+import java.util.Map;
 
 import lynn.models.Cell;
 
@@ -15,5 +16,8 @@ public interface CellService {
 	Iterable<Cell> findCellsByHostName(String name);
 	
 	List<Cell> chooseRandomCellsForCytoplasm(int max, String starterCellName);
+	
+	Map<String, Object> graph();
+
 
 }

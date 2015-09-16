@@ -21,7 +21,9 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import lynn.models.Cell;
 import lynn.models.Host;
 import lynn.repos.CellRepository;
+import lynn.repos.CytoplasmRepository;
 import lynn.repos.HostRepository;
+import lynn.services.CellService;
 
 @SpringBootApplication
 public class Application implements CommandLineRunner {
@@ -42,7 +44,9 @@ public class Application implements CommandLineRunner {
 	}
 
 	@Autowired CellRepository cellRepository;
+	@Autowired CellService cellService;
 	@Autowired HostRepository hostRepository;
+	@Autowired CytoplasmRepository cytoplasmRepository;
 	@Autowired GraphDatabase graphDatabase;
 
 	public void run(String... args) throws Exception {
@@ -98,6 +102,9 @@ public class Application implements CommandLineRunner {
 			for (Cell cell : cellRepository.findCellsByHostName(lynnAI.getName())) {
 				System.out.println(cell.getName() + " was created by LynnAI");
 			}
+			
+			System.out.println("Looking up Cytoplasms...");
+			System.out.println(cellService.graph());
 
 			tx.success();
 		} finally {

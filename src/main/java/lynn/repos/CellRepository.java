@@ -1,5 +1,8 @@
 package lynn.repos;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.repository.CrudRepository;
 
@@ -26,5 +29,10 @@ public interface CellRepository extends CrudRepository<Cell, Long> {
 			+ "ORDER BY number "
 			+ "LIMIT {0}")
 	Iterable<Cell> chooseRandomCellsForCytoplasm(int count, String starterCellName);
+	
+	@Query("MATCH (c:Cell)-[:CYTOPLASM]-(d:Cell) RETURN DISTINCT c.name as name, "
+			+ "c.about as about, "
+			+ "collect(d.name) as cytoplasm")
+    List<Map<String,Object>> graph();
 
 }

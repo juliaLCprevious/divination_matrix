@@ -1,8 +1,6 @@
 package lynn.voice;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.neo4j.graphdb.Transaction;
 import org.parboiled.common.StringUtils;
@@ -38,15 +36,8 @@ public class CellController {
 		System.out.println("Welcome to: " + message.getId());
         CellCulture response = new CellCulture();
            
-        // Load all the cells for our lovely biologists <3
-		Set<Cell> allCells = new HashSet<Cell>();
-		for (Cell cell : cellService.findAll()) {
-			allCells.add(cell);
-		}
-		
-		if (allCells != null) {
-			response.setCells(allCells);
-		}
+        // Load all the cells and cytoplasms for our lovely biologists <3
+		response.setD3network(cellService.graph());
 		
 		// If the user isn't a host, send 'em to LynnAI!
 		Host host = hostRepository.findOne(message.getId());
