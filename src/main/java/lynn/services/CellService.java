@@ -4,8 +4,11 @@ import java.util.List;
 import java.util.Map;
 
 import lynn.models.Cell;
+import lynn.voice.recieve.CellCreationSignal;
 
 public interface CellService {
+	
+	Cell createCell(CellCreationSignal signal);
 	
 	Cell findByName(String name);
 	
@@ -15,7 +18,7 @@ public interface CellService {
 	
 	Iterable<Cell> findCellsByHostName(String name);
 	
-	List<Cell> chooseRandomCellsForCytoplasm(int max, String starterCellName);
+	List<Cell> chooseRandomCellsForCytoplasm(int existingThreshold, int maxCells, String starterCellName);
 	
 	Map<String, Object> graph();
 

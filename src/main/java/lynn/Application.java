@@ -24,6 +24,7 @@ import lynn.repos.CellRepository;
 import lynn.repos.CytoplasmRepository;
 import lynn.repos.HostRepository;
 import lynn.services.CellService;
+import lynn.voice.recieve.CellCreationSignal;
 
 @SpringBootApplication
 public class Application implements CommandLineRunner {
@@ -105,6 +106,15 @@ public class Application implements CommandLineRunner {
 			
 			System.out.println("Looking up Cytoplasms...");
 			System.out.println(cellService.graph());
+			
+			System.out.println("Creating basic network. Good luck, little cells!");
+			for (int i = 0; i < 200; i++) {
+				CellCreationSignal signal = new CellCreationSignal();
+				signal.setName("Cellie"+i);
+				signal.setAbout("Hiya! I'm a cell created by computers! :3");
+				signal.setHostName(lynnAI.getName());
+				cellService.createCell(signal);
+			}
 
 			tx.success();
 		} finally {

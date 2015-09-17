@@ -1,11 +1,6 @@
 package lynn.voice;
 
-import java.util.List;
-
-import org.neo4j.graphdb.Transaction;
-import org.parboiled.common.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.neo4j.core.GraphDatabase;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
@@ -13,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lynn.models.Cell;
 import lynn.models.Host;
-import lynn.repos.CellRepository;
 import lynn.repos.HostRepository;
 import lynn.services.CellService;
 import lynn.voice.recieve.CellCreationSignal;
@@ -25,9 +19,7 @@ import lynn.voice.send.NewCell;
 public class CellController {
 	
 	@Autowired CellService cellService;
-	@Autowired CellRepository cellRepository;
 	@Autowired HostRepository hostRepository;
-	@Autowired GraphDatabase graphDatabase;
 	
 	@Transactional
 	@MessageMapping("/welcome")
@@ -54,41 +46,13 @@ public class CellController {
     @SendTo("/topic/newCell")
 	public NewCell createCell(CellCreationSignal signal) throws Exception {
 		System.out.println("Recieved cell creation signal: " + signal);			
-		Cell cell = new Cell(signal.getName(), signal.getAbout());
-		
-		Transaction tx = graphDatabase.beginTx();
-		try {
-			Cell existingCell = cellRepository.findByName(cell.getName());
-			if (existingCell != null) {
-				NewCell newCell = new NewCell();
-				newCell.setSuccess(false);
-				newCell.setError("NAME_TAKEN");
-				return newCell;
-			}
-			cell = cellRepository.save(cell);
-			System.out.println("New cell created: " + cell);
-			
-			if (StringUtils.isNotEmpty(signal.getHostName())) {
-				Host host = hostRepository.findByName(signal.getHostName());
-				if (host != null) {
-					host.addCreatedCell(cell);
-					hostRepository.save(host);
-				}
-				System.out.println("Host for new cell: " + host);
-			}
-					
-			List<Cell> cytoplasmCells = cellService.chooseRandomCellsForCytoplasm(3, cell.getName());
-			for (Cell cytoplasmCell : cytoplasmCells) {
-				System.out.println("Adding cell to cytoplasm: " + cytoplasmCell);
-				cell.addToCytoplasm(cytoplasmCell);
-			}
-			cell = cellRepository.save(cell);
-			tx.success();
-		} finally {
-			tx.close();
+		Cell cell = cellService.createCell(signal);	
+		if (cell == null) {
+			NewCell newCell = new NewCell();
+			newCell.setSuccess(false);
+			newCell.setError("NAME_TAKEN");
+			return newCell;
 		}
-			
-		
 		NewCell newCell = new NewCell();
 		newCell.setNewCell(cell);
 		return newCell;

@@ -1,24 +1,73 @@
 package lynn.services;
 
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.math3.random.RandomDataGenerator;
+import org.neo4j.graphdb.Transaction;
+import org.parboiled.common.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.neo4j.core.GraphDatabase;
 import org.springframework.stereotype.Service;
 
 import lynn.models.Cell;
+import lynn.models.Host;
 import lynn.repos.CellRepository;
+import lynn.repos.HostRepository;
+import lynn.voice.recieve.CellCreationSignal;
 
 @Service
 public class CellServiceImpl implements CellService {
 	
 	@Autowired CellRepository cellRepository;
+	@Autowired HostRepository hostRepository;
+	@Autowired GraphDatabase graphDatabase;
+	
+	@Override
+	public Cell createCell(CellCreationSignal signal) {
+		Cell cell = new Cell(signal.getName(), signal.getAbout());
+		
+		Transaction tx = graphDatabase.beginTx();
+		try {
+			Cell existingCell = cellRepository.findByName(cell.getName());
+			if (existingCell != null) {
+				return null;
+			}
+			cell = cellRepository.save(cell);
+			System.out.println("New cell created: " + cell);
+			
+			if (StringUtils.isNotEmpty(signal.getHostName())) {
+				Host host = hostRepository.findByName(signal.getHostName());
+				if (host != null) {
+					host.addCreatedCell(cell);
+					hostRepository.save(host);
+				}
+				System.out.println("Host for new cell: " + host);
+			}
+			
+			RandomDataGenerator r = new RandomDataGenerator();
+			int existingThreshold = (int) Math.round(r.nextGaussian(3, 1));
+			int maxCells = (int) Math.round(r.nextGaussian(3, 1));
+			existingThreshold = existingThreshold != 0 ? existingThreshold : 5;
+			maxCells = maxCells != 0 ? maxCells : 3;
+					
+			List<Cell> cytoplasmCells = chooseRandomCellsForCytoplasm(existingThreshold, maxCells, cell.getName());
+			for (Cell cytoplasmCell : cytoplasmCells) {
+				System.out.println("Adding cell to cytoplasm: " + cytoplasmCell);
+				cell.addToCytoplasm(cytoplasmCell);
+			}
+			cell = cellRepository.save(cell);
+			tx.success();
+		} finally {
+			tx.close();
+		}
+		
+		return cell;
+	}
 
 	@Override
 	public Cell findByName(String name) {
@@ -44,9 +93,9 @@ public class CellServiceImpl implements CellService {
 	}
 	
 	@Override
-	public List<Cell> chooseRandomCellsForCytoplasm(int max, String starterCellName) {
+	public List<Cell> chooseRandomCellsForCytoplasm(int existingThreshold, int maxCells, String starterCellName) {
 		List<Cell> cells = new LinkedList<Cell>();
-		for (Cell cytoplasmCell: cellRepository.chooseRandomCellsForCytoplasm(max, starterCellName)) {
+		for (Cell cytoplasmCell: cellRepository.chooseRandomCellsForCytoplasm(existingThreshold, maxCells, starterCellName)) {
 			cells.add(cytoplasmCell);
 		}
 		if (cells.isEmpty()) {
@@ -56,7 +105,7 @@ public class CellServiceImpl implements CellService {
 	}
 		
 	public Map<String, Object> graph() {
-        Iterator<Map<String, Object>> result = cellRepository.graph().iterator();
+        List<Map<String, Object>> result = cellRepository.graph();
         return toD3Format(result);
     }
 	
@@ -90,17 +139,15 @@ public class CellServiceImpl implements CellService {
     **/
 	
 	@SuppressWarnings("unchecked")
-	private Map<String, Object> toD3Format(Iterator<Map<String, Object>> result) {
+	private Map<String, Object> toD3Format(List<Map<String, Object>> result) {
 		System.out.println("Creating D3 graph. gird yr loins");
 		
-		ArrayList<Object> nodes = new ArrayList<Object>();
-        ArrayList<Map<String,Object>> rels= new ArrayList<Map<String,Object>>();
+		Object[] nodes = new Object[result.size()];
+        List<Map<String,Object>> rels= new LinkedList<Map<String,Object>>();
 		Map<String, Integer> positions = new HashMap<String, Integer>();
 		
 		int nodesPosition = 0; // position in the node list
-		while (result.hasNext()) {
-			Map<String, Object> row = result.next();
-			
+		for (Map<String, Object> row: result) { 		
 			// Every row returns attributes + cytoplasm:[1,2,...,n]
 			Map<String, Object> cell = new HashMap<String, Object>();
 			String cellName = (String) row.get("name"); 
@@ -113,30 +160,33 @@ public class CellServiceImpl implements CellService {
 			if (positions.get(cellName) == null) {
 				cellPosition = nodesPosition++;
 				positions.put(cellName, cellPosition);			
-				nodes.add(cell);
 			} else {
 				cellPosition = positions.get(cellName);
-				nodes.add(cellPosition, cell);
 			}
 			System.out.println("Adding " + cellName + " to position " + cellPosition + ". Body: " + cell);
+			nodes[cellPosition] = cell;
 			cell.put("id", cellPosition);
 			
 			// Add cytoplasm relationships
-			for (String cytoCellName : (Collection<String>) row.get("cytoplasm")) {
+			Collection<String> cytoplasm = (Collection<String>) row.get("cytoplasm");
+			System.out.println("Cytoplasm for " + cellName + ": " + cytoplasm);
+			for (String cytoCellName : cytoplasm) {
 				int cytoCellPosition;
 				
 				// Only create a relationship if the cytoplasmCell has not yet been parsed.
 				// This relationship would have already been added!
-				if (positions.get(cytoCellName) == null) {
+				if (positions.get(cytoCellName) == null) {		
 					cytoCellPosition = nodesPosition++;
 					positions.put(cytoCellName, cytoCellPosition);
-					rels.add(map("source", cellPosition, "target", cytoCellPosition));
-					System.out.println("Adding relationship b/w " + cellName +
-							" at position " + cellPosition + 
-							" and " + cytoCellName +
-							" at " + cytoCellPosition
-					);
+				} else {
+					cytoCellPosition = positions.get(cytoCellName);
 				}
+				rels.add(map("source", cellPosition, "target", cytoCellPosition));
+				System.out.println("Adding relationship b/w " + cellName +
+						" at position " + cellPosition + 
+						" and " + cytoCellName +
+						" at " + cytoCellPosition
+				);
 			}
 		}
 		return map("positionMap", positions, "d3data", map("nodes", nodes, "rels", rels));

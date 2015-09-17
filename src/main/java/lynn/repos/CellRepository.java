@@ -23,12 +23,12 @@ public interface CellRepository extends CrudRepository<Cell, Long> {
 	
 	@Query("MATCH (n:Cell)-[:CYTOPLASM]-(m:Cell) "
 			+ "WITH DISTINCT n, count(m) AS cytoCount "
-			+ "WHERE cytoCount < {0} AND NOT n.name = \"{1}\""
+			+ "WHERE cytoCount < {0} AND NOT n.name = \"{2}\""
 			+ "WITH n, cytoCount, rand() AS number "
 			+ "RETURN n "
 			+ "ORDER BY number "
-			+ "LIMIT {0}")
-	Iterable<Cell> chooseRandomCellsForCytoplasm(int count, String starterCellName);
+			+ "LIMIT {1}")
+	Iterable<Cell> chooseRandomCellsForCytoplasm(int existingThreshold, int maxCells, String starterCellName);
 	
 	@Query("MATCH (c:Cell)-[:CYTOPLASM]-(d:Cell) RETURN DISTINCT c.name as name, "
 			+ "c.about as about, "

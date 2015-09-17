@@ -35,7 +35,7 @@ var renderCellCulture = function(response) {
 }
 
 var dosomed3shit = function(graph) {
-    var width = 960,
+    var width = 1920,
         height = 500;
 
     var color = d3.scale.category20();
