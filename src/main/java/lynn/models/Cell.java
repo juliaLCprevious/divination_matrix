@@ -1,6 +1,8 @@
 package lynn.models;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import org.neo4j.graphdb.Direction;
@@ -11,6 +13,7 @@ import org.springframework.data.neo4j.annotation.RelatedTo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 @NodeEntity
 public class Cell {
@@ -78,6 +81,15 @@ public class Cell {
 	@JsonProperty
 	public void setCytoplasm(Set<Cell> cytoplasm) {
 		this.cytoplasm = cytoplasm;
+	}
+	
+	@JsonValue
+	public List<String> getCytoplasmNames() {
+		List<String> names = new LinkedList<String>();
+		for (Cell cell: cytoplasm) {
+			names.add(cell.getName());
+		}
+		return names;
 	}
 	
 	public Host getHost() {

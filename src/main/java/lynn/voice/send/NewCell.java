@@ -1,13 +1,15 @@
 package lynn.voice.send;
 
-import lynn.models.Cell;
+import java.util.List;
 
 public class NewCell {
 	
 	private boolean success;
 	private String error;
 	
-	private Cell newCell;
+	private String name;
+	private String about;
+	private List<String> cytoplasm;
 
 	public boolean isSuccess() {
 		return success;
@@ -25,12 +27,28 @@ public class NewCell {
 		this.error = error;
 	}
 
-	public Cell getNewCell() {
-		return newCell;
+	public String getName() {
+		return name;
 	}
 
-	public void setNewCell(Cell newCell) {
-		this.newCell = newCell;
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getAbout() {
+		return about;
+	}
+
+	public void setAbout(String about) {
+		this.about = about;
+	}
+
+	public List<String> getCytoplasm() {
+		return cytoplasm;
+	}
+
+	public void setCytoplasm(List<String> cytoplasm) {
+		this.cytoplasm = cytoplasm;
 	}
 
 }

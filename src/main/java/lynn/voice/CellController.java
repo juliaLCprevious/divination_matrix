@@ -54,7 +54,10 @@ public class CellController {
 			return newCell;
 		}
 		NewCell newCell = new NewCell();
-		newCell.setNewCell(cell);
+		newCell.setSuccess(true);
+		newCell.setName(cell.getName());
+		newCell.setAbout(cell.getAbout());
+		newCell.setCytoplasm(cell.getCytoplasmNames());
 		return newCell;
 	
 	}

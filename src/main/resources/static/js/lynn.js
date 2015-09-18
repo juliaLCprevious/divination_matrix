@@ -5,9 +5,18 @@ var positionsMap;
 var nodes;
 var links;
 
+// This is our lovely cell visualization!
+var width = 1920,
+    height = 1000;
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
 // Let's see those cells!
 var socket = new SockJS('/welcome');
 var stompClient = Stomp.over(socket);
+
 stompClient.connect({}, function(frame) {
     console.log('Connected: ' + frame);
     stompClient.subscribe('/topic/cellCulture', renderCellCulture);
@@ -28,16 +37,11 @@ var renderCellCulture = function(response) {
     console.log("Nodes: " + JSON.stringify(nodes));
     console.log("Links: " + JSON.stringify(links));
 
-    dosomed3shit({
-        nodes: nodes,
-        links: links
-    });
+    dosomed3shit(nodes, links);
 }
 
-var dosomed3shit = function(graph) {
-    var width = 1920,
-        height = 500;
-
+// Update function for the visualization!
+var dosomed3shit = function(nodes, links) {
     var color = d3.scale.category20();
 
     var force = d3.layout.force()
@@ -45,23 +49,19 @@ var dosomed3shit = function(graph) {
         .linkDistance(30)
         .size([width, height]);
 
-    var svg = d3.select("body").append("svg")
-        .attr("width", width)
-        .attr("height", height);
-
     force
-        .nodes(graph.nodes)
-        .links(graph.links)
+        .nodes(nodes)
+        .links(links)
         .start();
 
     var link = svg.selectAll(".link")
-        .data(graph.links)
+        .data(links)
         .enter().append("line")
         .attr("class", "link")
         .style("stroke-width", function(d) { return Math.sqrt(d.value); });
 
     var node = svg.selectAll(".node")
-        .data(graph.nodes)
+        .data(nodes)
         .enter().append("circle")
         .attr("class", "node")
         .attr("r", 5)
@@ -70,7 +70,7 @@ var dosomed3shit = function(graph) {
 
     node.append("title")
         .text(function(d) {
-            return "I'm " + d.name + "! About me: " + d.about;
+            return "I'm " + d.name + "! " + d.about;
         });
 
     force.on("tick", function() {
@@ -96,5 +96,6 @@ var renderNewCell = function(response) {
     console.log("We have a new cell!");
 
     var newCell = JSON.parse(response.body);
-    $('#cells').append("<p>(~" + newCell.newCell.name + "~)</p>")
-}
+    $('#cells').append("<p>(~" + newCell.name + "~)</p>");
+
+};

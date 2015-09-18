@@ -49,11 +49,15 @@ public class CellServiceImpl implements CellService {
 				System.out.println("Host for new cell: " + host);
 			}
 			
+			int existingThreshold = 5;
+			int maxCells = 5;
+			
 			RandomDataGenerator r = new RandomDataGenerator();
-			int existingThreshold = (int) Math.round(r.nextGaussian(3, 1));
-			int maxCells = (int) Math.round(r.nextGaussian(3, 1));
-			existingThreshold = existingThreshold != 0 ? existingThreshold : 5;
-			maxCells = maxCells != 0 ? maxCells : 3;
+			int branch = r.nextInt(0, 100);
+			if (branch <= 1) {
+				existingThreshold = 1000;
+				maxCells = 1;
+			}
 					
 			List<Cell> cytoplasmCells = chooseRandomCellsForCytoplasm(existingThreshold, maxCells, cell.getName());
 			for (Cell cytoplasmCell : cytoplasmCells) {
@@ -110,34 +114,6 @@ public class CellServiceImpl implements CellService {
     }
 	
 	
-	/**
-	 * Let's hope I never need you again, toD3Format()/past loves/etc.
-	 * 
-	 * 
-	private Map<String, Object> toD3Format(Iterator<Map<String, Object>> result) {
-        List<Map<String,Object>> nodes = new ArrayList<Map<String,Object>>();
-        List<Map<String,Object>> rels= new ArrayList<Map<String,Object>>();
-        int i=0;
-        while (result.hasNext()) {
-            Map<String, Object> row = result.next();
-            nodes.add(map("name",row.get("nexusCell"),"label","cell"));
-            System.out.println("Yay for #" + i + ": " + row);
-            int target=i;
-            i++;
-            for (Object name : (Collection) row.get("cytoplasm")) {
-                Map<String, Object> cell = map("name", name,"label","cell");
-                int source = nodes.indexOf(cell);
-                if (source == -1) {
-                    nodes.add(cell);
-                    source = i++;
-                }
-                rels.add(map("source",source,"target",target));
-            }
-        }
-        return map("nodes", nodes, "links", rels);
-    }
-    **/
-	
 	@SuppressWarnings("unchecked")
 	private Map<String, Object> toD3Format(List<Map<String, Object>> result) {
 		System.out.println("Creating D3 graph. gird yr loins");
@@ -191,7 +167,7 @@ public class CellServiceImpl implements CellService {
 		}
 		return map("positionMap", positions, "d3data", map("nodes", nodes, "rels", rels));
 	}
-	
+		
 	private Map<String, Object> map(String key1, Object value1, String key2, Object value2) {
         Map<String, Object> result = new HashMap<String,Object>(2);
         result.put(key1,value1);

@@ -22,5 +22,4 @@ public interface CellService {
 	
 	Map<String, Object> graph();
 
-
 }
