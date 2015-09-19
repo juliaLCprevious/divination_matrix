@@ -5,7 +5,7 @@ var positionsMap;
 var nodes;
 var links;
 
-// This is our lovely cell visualization!
+// This is for our lovely cell visualization!
 var width = 1920,
     height = 1000;
 
@@ -13,22 +13,10 @@ var svg = d3.select("body").append("svg")
     .attr("width", width)
     .attr("height", height);
 
-// Let's see those cells!
-var socket = new SockJS('/welcome');
-var stompClient = Stomp.over(socket);
-
-stompClient.connect({}, function(frame) {
-    console.log('Connected: ' + frame);
-    stompClient.subscribe('/topic/cellCulture', renderCellCulture);
-    stompClient.subscribe('/topic/newCell', renderNewCell);
-    stompClient.send("/app/welcome", {}, JSON.stringify({ 'id': 0 }));
-});
-
 var renderCellCulture = function(response) {
     console.log("We have cells!");
 
-    var body = JSON.parse(response.body);
-    var network = body["d3network"];
+    var network = response["d3network"];
     positionsMap = network.positionMap;
     nodes = network.d3data.nodes;
     links = network.d3data.rels;
@@ -83,6 +71,18 @@ var dosomed3shit = function(nodes, links) {
             .attr("cy", function(d) { return d.y; });
     });
 }
+
+// Let's see those cells!
+$.get("/cellCulture", renderCellCulture);
+
+// Watch for new cells!
+var socket = new SockJS('/createCell');
+var stompClient = Stomp.over(socket);
+
+stompClient.connect({}, function(frame) {
+    console.log('Connected: ' + frame);
+    stompClient.subscribe('/topic/newCell', renderNewCell);
+});
 
 $("#create-cell").on('click', function(event) {
     var newCell = {

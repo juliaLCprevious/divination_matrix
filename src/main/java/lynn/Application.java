@@ -38,7 +38,7 @@ public class Application implements CommandLineRunner {
 			setBasePackage("lynn");
 		}
 
-		@Bean
+		@Bean(destroyMethod = "shutdown")
 		GraphDatabaseService graphDatabaseService() {
 			return new GraphDatabaseFactory().newEmbeddedDatabase("accessingdataneo4j.db");
 		}

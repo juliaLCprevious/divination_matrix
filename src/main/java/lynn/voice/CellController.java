@@ -5,13 +5,14 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import lynn.models.Cell;
 import lynn.models.Host;
 import lynn.repos.HostRepository;
 import lynn.services.CellService;
 import lynn.voice.recieve.CellCreationSignal;
-import lynn.voice.recieve.WelcomeMessage;
 import lynn.voice.send.CellCulture;
 import lynn.voice.send.NewCell;
 
@@ -21,21 +22,15 @@ public class CellController {
 	@Autowired CellService cellService;
 	@Autowired HostRepository hostRepository;
 	
-	@Transactional
-	@MessageMapping("/welcome")
-    @SendTo("/topic/cellCulture")
-    public CellCulture welcome(WelcomeMessage message) throws Exception {
-		System.out.println("Welcome to: " + message.getId());
+	@RequestMapping("/cellCulture")
+	public @ResponseBody CellCulture getcellCulture() throws Exception {
         CellCulture response = new CellCulture();
            
         // Load all the cells and cytoplasms for our lovely biologists <3
 		response.setD3network(cellService.graph());
 		
-		// If the user isn't a host, send 'em to LynnAI!
-		Host host = hostRepository.findOne(message.getId());
-		if (host == null) {
-			hostRepository.findByName("LynnAI");
-		}
+		// Someday, accept a host param. Till then, send 'em to LynnAI!
+		Host host = hostRepository.findByName("LynnAI");
 		response.setHost(host); 
     		
         return response;
