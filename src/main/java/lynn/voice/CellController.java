@@ -5,6 +5,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -34,6 +35,14 @@ public class CellController {
 		response.setHost(host); 
     		
         return response;
+    }
+	
+	@RequestMapping("/cell/{cellName}")
+	public @ResponseBody Cell getCell(@PathVariable String cellName) {
+		System.out.println("Retrieving cell: " + cellName);
+		Cell cell = cellService.findByName(cellName);
+		System.out.println(cell);
+        return cell;
     }
 	
 	@Transactional

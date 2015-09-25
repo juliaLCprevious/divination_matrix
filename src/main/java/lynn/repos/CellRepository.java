@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.neo4j.annotation.Query;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.neo4j.repository.GraphRepository;
 
 import lynn.models.Cell;
 
-public interface CellRepository extends CrudRepository<Cell, Long> {
+public interface CellRepository extends GraphRepository<Cell> {
 	
 	Cell findByName(String name);
 	

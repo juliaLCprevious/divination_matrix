@@ -49,16 +49,16 @@ public class CellServiceImpl implements CellService {
 				System.out.println("Host for new cell: " + host);
 			}
 			
-			int existingThreshold = 5;
-			int maxCells = 5;
+			int existingThreshold = 7;
+			int maxCells = 7;
 			
 			RandomDataGenerator r = new RandomDataGenerator();
 			int branch = r.nextInt(0, 100);
-			if (branch <= 1) {
+			if (branch <= 10) {
 				existingThreshold = 1000;
 				maxCells = 1;
 			}
-					
+			
 			List<Cell> cytoplasmCells = chooseRandomCellsForCytoplasm(existingThreshold, maxCells, cell.getName());
 			for (Cell cytoplasmCell : cytoplasmCells) {
 				System.out.println("Adding cell to cytoplasm: " + cytoplasmCell);

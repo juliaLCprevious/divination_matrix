@@ -13,7 +13,6 @@ import org.springframework.data.neo4j.annotation.RelatedTo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
 
 @NodeEntity
 public class Cell {
@@ -40,6 +39,17 @@ public class Cell {
 			cytoplasm = new HashSet<Cell>();
 		}
 		cytoplasm.add(cell);
+	}
+	
+	@JsonIgnore 
+	@RelatedTo(type="MESSAGES", direction = Direction.OUTGOING)
+	private Set<Comment> comments;
+	
+	public void addComment(Comment comment) {
+		if (comments == null) {
+			comments = new HashSet<Comment>();
+		}
+		comments.add(comment);
 	}
 	
 	@RelatedTo(type="CREATED", direction=Direction.INCOMING)
@@ -83,7 +93,6 @@ public class Cell {
 		this.cytoplasm = cytoplasm;
 	}
 	
-	@JsonValue
 	public List<String> getCytoplasmNames() {
 		List<String> names = new LinkedList<String>();
 		for (Cell cell: cytoplasm) {
