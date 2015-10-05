@@ -1,4 +1,4 @@
-package lynn.voice;
+package divination.matrix.communication;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -18,7 +18,7 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
 
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
-		registry.addEndpoint("/createCell").withSockJS();
+		registry.addEndpoint("/addReading").withSockJS();
 	}
 
 }

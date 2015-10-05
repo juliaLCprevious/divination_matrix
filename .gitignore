@@ -1,7 +1,8 @@
-#Lynn-Specific
+#Divination-Matrix-Specific
 .classpath
 .project
 .settings
+.springBeans
 accessingdataneo4j.db
 target
 
