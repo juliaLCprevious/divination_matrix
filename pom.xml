@@ -10,7 +10,7 @@
 	</parent>
 
     <groupId>GaiaIT</groupId>
-    <artifactId>lynn</artifactId>
+    <artifactId>divination_matrix</artifactId>
     <version>0.1.0</version>
 
     <properties>
