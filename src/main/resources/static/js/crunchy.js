@@ -25,7 +25,7 @@ var renderReading = function(next) {
     $('#name').text(hexagram.chinese + " " + hexagram.name);
     $("#space").text(hexagram.character);
     $("#pseudonym").text(reading.pseudonym);
-    setTimeout(next, 500);
+    setTimeout(next, Math.floor(Math.random() * (300 - 100 + 1)) + 100);
 };
 
 async.parallel([

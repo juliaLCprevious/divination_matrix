@@ -1,6 +1,8 @@
 package divination.matrix;
 
 import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -123,21 +125,20 @@ public class Application implements CommandLineRunner {
 			}
 			
 			System.out.println("Creating reading data...");
-			Reading[] readings = {
-				new Reading("Noah", 0),
-				new Reading("Emily", 0),
-				new Reading("Julia", 0)
-			};
+			List<Reading> readings = new LinkedList<Reading>();
+			for (int i = 0; i < 200; i++) {
+				readings.add(new Reading("Soul #" + i, 0));
+			}
 			RandomDataGenerator r = new RandomDataGenerator();
-			for (Reading reading : readings) {
-				reading = readingRepository.save(reading);
-				if (reading == null) {
-					System.out.println("Something fucked up! Fix it, nerd!");
-				}
-				reading.setHexagram(hexagrams[r.nextInt(1, 64)]);
-				readingRepository.save(reading);
-				System.out.println(reading);
-			}		
+			readings.stream()
+					.map(reading -> { 
+						return readingRepository.save(reading); 
+					})
+					.map(reading -> {
+						reading.setHexagram(hexagrams[r.nextInt(0, 63)]);
+						return readingRepository.save(reading);
+					})
+					.forEach(reading -> { System.out.println(reading); });		
 			tx.success();
 		} finally {
 			tx.close();
