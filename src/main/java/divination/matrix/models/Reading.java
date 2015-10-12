@@ -1,6 +1,7 @@
 package divination.matrix.models;
 
 import org.neo4j.graphdb.Direction;
+import org.springframework.data.neo4j.annotation.Fetch;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
@@ -10,16 +11,18 @@ public class Reading {
 	
 	@GraphId private Long id;
 	private String pseudonym;
-	
+	private int hexagramNumber;
 	
 	public Reading() {}
-	public Reading(String pseudonym) {
+	public Reading(String pseudonym, int hexagramNumber) {
 		this.pseudonym = pseudonym;
+		this.hexagramNumber = hexagramNumber;
 	}
 	
 	/**
 	 * Node properties
 	 */
+	@Fetch
 	@RelatedTo(type="READING", direction=Direction.INCOMING)
 	private Hexagram hexagram;
 	
@@ -43,17 +46,25 @@ public class Reading {
 		this.pseudonym = pseudonym;
 	}
 	
+	public int getHexagramNumber() {
+		return hexagramNumber;
+	}
+	
+	public void setHexagramNumber(int hexagramNumber) {
+		this.hexagramNumber = hexagramNumber;
+	}
+	
 	public Hexagram getHexagram() {
 		return hexagram;
 	}
 	
 	public void setHexagram(Hexagram hexagram) {
 		this.hexagram = hexagram;
+		this.hexagramNumber = hexagram.getNumber();
 	}
 	
 	public String toString() {
-		int hexagramNumber = hexagram != null ? hexagram.getNumber() : null;
 		return "Reading [pseudonym: " + pseudonym
-				+ ", hexagram: " + hexagramNumber + "]";
+				+ ", hexagram: " + hexagram + "]";
 	}
 }

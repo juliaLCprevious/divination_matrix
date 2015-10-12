@@ -1,5 +1,6 @@
 package divination.matrix.models;
 
+import org.springframework.data.neo4j.annotation.Fetch;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 
@@ -7,10 +8,10 @@ import org.springframework.data.neo4j.annotation.NodeEntity;
 public class Hexagram {
 	
 	@GraphId private Long id;
-	private int number;
-	private String name;
-	private String chinese;
-	private String character;
+	@Fetch private int number;
+	@Fetch private String name;
+	@Fetch private String chinese;
+	@Fetch private String character;
 	
 	
 	public Hexagram() {}
@@ -43,6 +44,22 @@ public class Hexagram {
 	
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public String getChinese() {
+		return chinese;
+	}
+	
+	public void setChinese(String chinese) {
+		this.chinese = chinese;
+	}
+	
+	public String getCharacter() {
+		return character;
+	}
+	
+	public void setCharacter(String character) {
+		this.character = character;
 	}
 	
 	public String toString() {

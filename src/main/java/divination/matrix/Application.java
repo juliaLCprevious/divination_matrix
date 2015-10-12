@@ -124,14 +124,13 @@ public class Application implements CommandLineRunner {
 			
 			System.out.println("Creating reading data...");
 			Reading[] readings = {
-				new Reading("Noah"),
-				new Reading("Emily"),
-				new Reading("Julia")
+				new Reading("Noah", 0),
+				new Reading("Emily", 0),
+				new Reading("Julia", 0)
 			};
 			RandomDataGenerator r = new RandomDataGenerator();
 			for (Reading reading : readings) {
-				readingRepository.save(reading);
-				reading = readingRepository.findByPseudonym(reading.getPseudonym());
+				reading = readingRepository.save(reading);
 				if (reading == null) {
 					System.out.println("Something fucked up! Fix it, nerd!");
 				}
