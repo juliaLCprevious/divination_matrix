@@ -2,6 +2,7 @@ package divination.matrix;
 
 import java.io.File;
 
+import org.apache.commons.math3.random.RandomDataGenerator;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
@@ -19,7 +20,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
 import divination.matrix.models.Hexagram;
+import divination.matrix.models.Reading;
 import divination.matrix.repos.HexagramRepository;
+import divination.matrix.repos.ReadingRepository;
 
 @SpringBootApplication
 public class Application implements CommandLineRunner {
@@ -40,12 +43,14 @@ public class Application implements CommandLineRunner {
 	}
 
 	@Autowired HexagramRepository hexagramRepository;
+	@Autowired ReadingRepository readingRepository;
 	@Autowired GraphDatabase graphDatabase;
 	
 	public void run(String... args) throws Exception {
 			
 		Transaction tx = graphDatabase.beginTx();
 		try {
+			System.out.println("Creating hexagram data...");
 			Hexagram[] hexagrams = {
 				new Hexagram(1, "Force", "乾", "䷀"),
 				new Hexagram(2, "Field", "坤", "䷁"),
@@ -112,9 +117,28 @@ public class Application implements CommandLineRunner {
 				new Hexagram(63, "Already Fording", "既濟", "䷾"),
 				new Hexagram(64, "Not Yet Fording", "未濟", "䷿"),
 			};
-			for(Hexagram hexagram : hexagrams) {
+			for (Hexagram hexagram : hexagrams) {
 				hexagramRepository.save(hexagram);
+				System.out.println(hexagram);
 			}
+			
+			System.out.println("Creating reading data...");
+			Reading[] readings = {
+				new Reading("Noah"),
+				new Reading("Emily"),
+				new Reading("Julia")
+			};
+			RandomDataGenerator r = new RandomDataGenerator();
+			for (Reading reading : readings) {
+				readingRepository.save(reading);
+				reading = readingRepository.findByPseudonym(reading.getPseudonym());
+				if (reading == null) {
+					System.out.println("Something fucked up! Fix it, nerd!");
+				}
+				reading.setHexagram(hexagrams[r.nextInt(1, 64)]);
+				readingRepository.save(reading);
+				System.out.println(reading);
+			}		
 			tx.success();
 		} finally {
 			tx.close();
