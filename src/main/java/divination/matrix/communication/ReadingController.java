@@ -18,7 +18,7 @@ import divination.matrix.repos.HexagramRepository;
 import divination.matrix.repos.ReadingRepository;
 
 @Controller
-public class VisualizationController {
+public class ReadingController {
 	
 	@Autowired HexagramRepository hexagramRepository;
 	@Autowired ReadingRepository readingRepository;
@@ -30,18 +30,20 @@ public class VisualizationController {
 	@MessageMapping("/addReading")
     @SendTo("/topic/newReading")
 	public Reading addReading(Reading reading) {
+		System.out.println("Recieved new reading: " + reading);
 		if (hexagrams == null) {
 			hexagrams = new Hexagram[64];
 			for (Hexagram hexagram : hexagramRepository.findAll()) {
-				hexagrams[hexagram.getNumber()] = hexagram;
+				hexagrams[hexagram.getNumber() - 1] = hexagram;
 			}
 		}
 		Transaction tx = graphDatabase.beginTx();
 		try {
 			reading = readingRepository.save(reading);
-			reading.setHexagram(hexagrams[reading.getHexagramNumber()]);
+			reading.setHexagram(hexagrams[reading.getHexagramNumber() - 1]);
 			reading = readingRepository.save(reading);
 			tx.success();
+			System.out.println("Reading successful!" + reading);
 		} finally {
 			tx.close();
 		}

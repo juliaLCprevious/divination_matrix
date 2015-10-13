@@ -65,6 +65,7 @@ public class Reading {
 	
 	public String toString() {
 		return "Reading [pseudonym: " + pseudonym
+				+ ", hexagramNumber: " + hexagramNumber
 				+ ", hexagram: " + hexagram + "]";
 	}
 }
