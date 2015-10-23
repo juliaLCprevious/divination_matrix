@@ -1,0 +1,43 @@
+{
+    "skinIndices": [],
+    "influencesPerVertex": 2,
+    "skinWeights": [],
+    "uvs": [],
+    "name": "Cube.003Geometry.1",
+    "normals": [-0.577349,0.577349,-0.577349,-0.577349,0.577349,0.577349,0.577349,0.577349,0.577349,0.577349,0.577349,-0.577349,-0.577349,-0.577349,-0.577349,0.577349,-0.577349,-0.577349,0.577349,-0.577349,0.577349,-0.577349,-0.577349,0.577349],
+    "faces": [35,0,1,2,3,0,0,1,2,3,35,4,7,6,5,0,4,5,6,7,35,0,4,5,1,0,0,4,7,1,35,1,5,6,2,0,1,7,6,2,35,2,6,7,3,0,2,6,5,3,35,4,0,3,7,0,4,0,3,5],
+    "metadata": {
+        "type": "Geometry",
+        "colors": 0,
+        "generator": "io_three",
+        "uvs": 0,
+        "normals": 8,
+        "bones": 0,
+        "faces": 6,
+        "version": 3,
+        "materials": 1,
+        "vertices": 8
+    },
+    "bones": [],
+    "colors": [],
+    "materials": [{
+        "visible": true,
+        "opacity": 1,
+        "transparent": false,
+        "colorDiffuse": [0.152328,0.152328,0.152328],
+        "shading": "phong",
+        "DbgIndex": 0,
+        "depthTest": true,
+        "depthWrite": true,
+        "specularCoef": 77,
+        "vertexColors": false,
+        "colorSpecular": [0.310817,0.310817,0.310817],
+        "wireframe": false,
+        "blending": "NormalBlending",
+        "DbgColor": 15658734,
+        "colorEmissive": [0,0,0],
+        "DbgName": "Material.002",
+        "colorAmbient": [0.152328,0.152328,0.152328]
+    }],
+    "vertices": [1.87479,-0.513363,4.74163,1.87479,-0.513364,-4.74163,-1.91016,-0.513364,-4.74163,-1.91016,-0.513363,4.74163,1.87479,0.513364,4.74163,1.87479,0.513363,-4.74163,-1.91016,0.513363,-4.74163,-1.91016,0.513364,4.74163]
+}
